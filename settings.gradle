@@ -1,0 +1,5 @@
+rootProject.name = "EasyRequest"
+include ':app'
+include ':easyapi_compiler'
+include ':easyapi_annotation'
+include ':easyapi'
