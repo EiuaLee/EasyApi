@@ -8,10 +8,16 @@ dependencies {
     implementation 'com.google.auto.service:auto-service:1.0-rc6'
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc6'
     implementation 'com.squareup:javapoet:1.9.0'
-    implementation project(':easyapi_annotation')
+    implementation 'io.github.eiualee:easyapi_annotation:1.0.6'
 }
 
 //  解决build警告：编码GBK的不可映射字符
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
+
+ext {
+    PUBLISH_ARTIFACT_ID = "easyapi_compiler"
+}
+
+apply from: '../compilerpublish.gradle'

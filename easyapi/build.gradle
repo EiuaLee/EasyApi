@@ -29,13 +29,19 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        viewBinding true
-    }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
     implementation "io.reactivex.rxjava2:rxjava:2.2.12"
+    api "io.github.eiualee:easyapi_annotation:1.0.6"
+
+//    api project(path: ':easyapi_annotation')
 }
+
+ext {
+    PUBLISH_ARTIFACT_ID = "easyapi"
+}
+
+apply from: '../publish.gradle'

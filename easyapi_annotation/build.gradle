@@ -12,3 +12,8 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
+ext {
+    PUBLISH_ARTIFACT_ID = "easyapi_annotation"
+}
+
+apply from: '../annotationpublish.gradle'

@@ -4,6 +4,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.HashMap;
+import java.util.Map;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
@@ -29,5 +31,11 @@ public @interface ApiFactory {
 
     //是否全局自动处理错误信息
     boolean isEnableAutoHandleError() default true;
+
+    //细粒度的入参替换前的名称
+    String[] paramsReplaceKey() default {};
+
+    //细粒度的入参替换后的名称
+    String[] paramsReplaceValue() default {};
 }
 

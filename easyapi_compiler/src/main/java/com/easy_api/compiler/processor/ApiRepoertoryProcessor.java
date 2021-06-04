@@ -41,6 +41,8 @@ public class ApiRepoertoryProcessor implements IProcessor {
     private String apiRepoertoryPath = ""; //api实现类 路径
     private boolean isEnableAutoRefreshToken; //是否自动添加Token刷新
     private boolean isEnableAutoHandleError; //是否自动处理错误
+    private String[] paramsReplaceKey; //细粒度的替换集合
+    private String[] paramsReplaceValue; //细粒度的替换集合
 
 
     @Override
@@ -67,6 +69,8 @@ public class ApiRepoertoryProcessor implements IProcessor {
             apiRepoertoryPath = apiFactory.createApiFilePath();
             isEnableAutoRefreshToken = apiFactory.isEnableAutoRefreshToken();
             isEnableAutoHandleError = apiFactory.isEnableAutoHandleError();
+            paramsReplaceKey = apiFactory.paramsReplaceKey();
+            paramsReplaceValue = apiFactory.paramsReplaceValue();
 
             //遍历有ApiFactory 注解的类，获取这个类的 方法对象
             for (Element e : element.getEnclosedElements()) {
@@ -277,21 +281,45 @@ public class ApiRepoertoryProcessor implements IProcessor {
      * @return
      */
     private String getParameterStr(ExecutableElement executableElement, MethodSpec.Builder builder) {
+
+        if(paramsReplaceKey.length != paramsReplaceValue.length){
+            annotationProcessor.mMessager.printMessage(Diagnostic.Kind.ERROR, "请检查paramsReplaceKey 和 paramsReplaceValue 是否相等");
+            return "" ;
+        }
+
         String parameterStr = "";
         for (int i = 0; i < executableElement.getParameters().size(); i++) {
             if (i > 0) {
                 parameterStr += ",";
             }
             VariableElement variableElement = executableElement.getParameters().get(i);
-            parameterStr += variableElement.getSimpleName().toString();
-            if (variableElement.getSimpleName().toString().equals("token")) {
+            //查看是否需要替换掉入参
+            int containsIndex = contains(paramsReplaceKey,variableElement.getSimpleName().toString());
+            if (containsIndex > -1) {
+                parameterStr += paramsReplaceValue[containsIndex];
                 continue;
             }
+            parameterStr += variableElement.getSimpleName().toString();
             builder.addParameter(TypeName.get(variableElement.asType()), variableElement.getSimpleName().toString());
         }
+
         return parameterStr;
     }
 
+    /**
+     * 判断值是否相等
+     * @param strings
+     * @param value
+     * @return
+     */
+    private int contains(String[] strings,String value){
+        if(strings == null || strings.length == 0)return -1;
+        for(int i= 0;i<strings.length;i++){
+            String key = strings[i];
+            if(key.equals(value))return i;
+        }
+        return -1;
+    }
 
     /**
      * 是否含有 IgnoreRefreshToken 注解

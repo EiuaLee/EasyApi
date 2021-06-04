@@ -4,11 +4,11 @@ import android.net.ParseException
 import com.blankj.utilcode.util.SPStaticUtils
 import com.blankj.utilcode.util.SPUtils
 import com.blankj.utilcode.util.Utils
-import com.eiualee.easyapi.EasyApi
 import com.eiualee.demo.bean.BaseListResp
 import com.eiualee.demo.bean.BaseResp
 import com.eiualee.demo.bean.RefreshTokenResp
 import com.eiualee.demo.exception.LoginException
+import com.eiualee.easyapi.EasyApi
 import com.eiualee.easyapi.iface.EasyApiServiceIface
 import com.eiualee.easyapi.iface.EasyRefreshTokenIface
 import com.eiualee.easyapi.iface.EasyRespIface
@@ -75,6 +75,7 @@ class Api: EasyApiServiceIface<ApiService> {
         //加token之类的信息
         chain.proceed(builder.build())
     }
+
 
 
     private constructor() {
