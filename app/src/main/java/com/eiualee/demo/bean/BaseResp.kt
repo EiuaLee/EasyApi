@@ -7,7 +7,6 @@ open class BaseResp<T>: EasyRespIface<T> {
     var msg: String = ""
     var data: T? = null
 
-
     /**
      * 是否请求成功
      * @return Boolean

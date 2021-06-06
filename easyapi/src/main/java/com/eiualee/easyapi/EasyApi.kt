@@ -117,7 +117,7 @@ object EasyApi {
      * @return EasyRefreshTokenIface<out EasyRespIface<*>>
      */
     @JvmStatic
-    fun refreshToken(): EasyRefreshTokenIface<out EasyRespIface<*>> {
+    fun refreshToken(): EasyRefreshTokenIface<out EasyRespIface<*>>? {
         if (onEasyApiCallback == null) {
             throw NullPointerException("OnEasyApiCallback 不能为空")
         }
@@ -149,7 +149,7 @@ object EasyApi {
          * 绑定刷新Token的请求接口
          * @return EasyRefreshTokenIface<out EasyRespIface<*>>
          */
-        fun bindRefreshToken(): EasyRefreshTokenIface<out EasyRespIface<*>>
+        fun bindRefreshToken(): EasyRefreshTokenIface<out EasyRespIface<*>>?
 
         /**
          * 处理原始数据

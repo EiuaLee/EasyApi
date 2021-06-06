@@ -4,6 +4,8 @@ import com.easy_api.annotation.ApiFactory
 import com.easy_api.annotation.EasyErrorHandle
 import com.easy_api.annotation.EasyRefreshToken
 import com.eiualee.demo.bean.BaseResp
+import com.eiualee.demo.bean.ExtendsBaseListRespBean
+import com.eiualee.demo.bean.ExtendsBaseRespBean
 import com.eiualee.demo.bean.RefreshTokenResp
 import io.reactivex.Flowable
 import retrofit2.http.Field
@@ -39,22 +41,22 @@ interface ApiService {
     /**
      * 演示停止不处理错误信息 @EasyErrorHandle
      * @param refreshToken String
-     * @return Flowable<BaseResp<Any>>
+     * @return Flowable<ExtendsBaseListRespBean>
      */
     @EasyErrorHandle
     @FormUrlEncoded
     @POST("easyapi/fun1")
-    fun fun1(): Flowable<BaseResp<Any>>
+    fun fun1(): Flowable<ExtendsBaseListRespBean>
 
 
     /**
      * 演示停止自动刷新token @EasyRefreshToken
-     * @return Flowable<BaseResp<Any>>
+     * @return Flowable<ExtendsBaseRespBean>
      */
     @EasyRefreshToken
     @FormUrlEncoded
     @POST("easyapi/fun2")
-    fun fun2(@Field("mobile") mobile: String, @Field("code") code: String): Flowable<BaseResp<Any>>
+    fun fun2(@Field("mobile") mobile: String, @Field("code") code: String): Flowable<ExtendsBaseRespBean>
 
 
     /**

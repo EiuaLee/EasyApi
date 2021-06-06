@@ -51,22 +51,19 @@ class Api: EasyApiServiceIface<ApiService> {
     private val SERVICE_UNAVAILABLE = 503
     private val GATEWAY_TIMEOUT = 504
 
+    //=========== 自定义 ===========
+    private val HTTP_ERROR = 1003 //协议出错
+    private val UNKNOWN = 1000 //未知错误
+    private val PARSE_ERROR = 1001  //解析错误
+    private val NETWORD_ERROR = 1002 //网络错误
+
 
     companion object {
         @JvmStatic
         val INSTANCE: Api by lazy(lock = LazyThreadSafetyMode.SYNCHRONIZED) { Api() }
         const val BASE_URL = "http://www.xxx.com/"
-        const val RESET_LOGIN = 505
 
-        //=========== 自定义 ===========
-        //协议出错
-        const val HTTP_ERROR = 1003
-        //未知错误
-        const val UNKNOWN = 1000
-        //解析错误
-        const val PARSE_ERROR = 1001
-        //网络错误
-        const val NETWORD_ERROR = 1002
+        const val RESET_LOGIN = 505 //重新登录
     }
 
 
