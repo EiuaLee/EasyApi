@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.eiualee/easyapi.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.eiualee%22%20AND%20a:%22easyapi%22)
+[![easyapi](https://img.shields.io/maven-central/v/io.github.eiualee/easyapi.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.eiualee%22%20AND%20a:%22easyapi%22)
 
 #### 编写这个库的目的
 让程序去帮你写接口调用实现类，减少重复性的代码，并在其中内置Token自动刷新，错误预处理两个核心功能，让你的请求更加简单快捷。
