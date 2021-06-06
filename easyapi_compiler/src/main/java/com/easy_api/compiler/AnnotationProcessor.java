@@ -53,8 +53,8 @@ public class AnnotationProcessor extends AbstractProcessor {
 
     /**
      * 获取TypeName实体
-     * @param elementName
-     * @return
+     * @param elementName 对象
+     * @return TypeName
      */
     public TypeName getTypeName(String elementName) {
         return ClassName.get(mElements.getTypeElement(elementName).asType());

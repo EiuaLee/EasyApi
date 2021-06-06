@@ -49,8 +49,7 @@ public class ApiRepoertoryProcessor implements IProcessor {
     public void process(RoundEnvironment roundEnv, AnnotationProcessor annotationProcessor) {
 
         this.annotationProcessor = annotationProcessor;
-        this.roundEnv =roundEnv;
-
+        this.roundEnv = roundEnv;
 
 
         //先获取有ApiFactory 注解的类
@@ -78,14 +77,14 @@ public class ApiRepoertoryProcessor implements IProcessor {
                 TypeMirror elementReturnType = executableElement.getReturnType();
 
                 boolean isIgnoreRrefreshToken = !isEnableAutoRefreshToken;
-                boolean isIgnoreHandleError= !isEnableAutoHandleError;
+                boolean isIgnoreHandleError = !isEnableAutoHandleError;
                 EasyRefreshToken easyRefreshToken = e.getAnnotation(EasyRefreshToken.class);
-                if(easyRefreshToken != null){
+                if (easyRefreshToken != null) {
                     isIgnoreRrefreshToken = easyRefreshToken.ignore();
                 }
 
                 EasyErrorHandle easyErrorHandle = e.getAnnotation(EasyErrorHandle.class);
-                if(easyErrorHandle != null){
+                if (easyErrorHandle != null) {
                     isIgnoreHandleError = easyErrorHandle.ignore();
                 }
 
@@ -95,14 +94,14 @@ public class ApiRepoertoryProcessor implements IProcessor {
                     String superClassStr = annotationProcessor.mElements.getTypeElement(innerFlowableGp).getSuperclass().toString();
                     //是否继承BaseResponseList 或者 BaseResponse
                     if (superClassStr.contains(baseListRespPath)) { //Entry:Login2:BaseListResponse<Login2>     ApiService:Flowable<Login2>
-                        methodSpec = createMethodByResponseList(executableElement, isIgnoreRrefreshToken,isIgnoreHandleError);
+                        methodSpec = createMethodByResponseList(executableElement, isIgnoreRrefreshToken, isIgnoreHandleError);
                     } else if (superClassStr.contains(baseRespPath)) { //ApiService:Flowable<BaseResponse<Any>>
-                        methodSpec = createMethodByResponse(executableElement, isIgnoreRrefreshToken,isIgnoreHandleError); //Entry:Login2:BaseResponse<Login2>   ApiSerive:Flowable<Login2>
+                        methodSpec = createMethodByResponse(executableElement, isIgnoreRrefreshToken, isIgnoreHandleError); //Entry:Login2:BaseResponse<Login2>   ApiSerive:Flowable<Login2>
                     }
                 } else if (innerFlowableGp.contains(baseListRespPath)) { //不是继承而是直接就是BaseResponseList
-                    methodSpec = createMethodByResponseList(executableElement, isIgnoreRrefreshToken,isIgnoreHandleError);
+                    methodSpec = createMethodByResponseList(executableElement, isIgnoreRrefreshToken, isIgnoreHandleError);
                 } else {
-                    methodSpec = createMethodByResopnseObj(executableElement, isIgnoreRrefreshToken,isIgnoreHandleError);
+                    methodSpec = createMethodByResopnseObj(executableElement, isIgnoreRrefreshToken, isIgnoreHandleError);
 
                 }
                 if (methodSpec == null) {
@@ -129,7 +128,7 @@ public class ApiRepoertoryProcessor implements IProcessor {
      * @param executableElement
      * @return
      */
-    private MethodSpec createMethodByResponseList(ExecutableElement executableElement,boolean isIgnoreRrefreshToken,boolean isIgnoreHandleError) {
+    private MethodSpec createMethodByResponseList(ExecutableElement executableElement, boolean isIgnoreRrefreshToken, boolean isIgnoreHandleError) {
 
         //Flowable<BaseListResponse<Login2>> -> BaseListResponse<Login2>
         String genericParadigm = Utils.getGenericParadigm(executableElement.getReturnType().toString(), "io.reactivex.Flowable<");
@@ -152,10 +151,10 @@ public class ApiRepoertoryProcessor implements IProcessor {
         String autoCode = "return $T.getINSTANCE().getEasyService().$L($L)" +
                 ".map($T.<$T>handleListResult())" +
                 ".retryWhen($T.refreshToken().doRefresh())" +
-                ".onErrorResumeNext($T.httpErrorHandle())" +
+                ".onErrorResumeNext($T.<$T>httpErrorHandle())" +
                 ".compose($T.<$T>io_main())";
 
-        return addStatement(builder,executableElement,isIgnoreRrefreshToken,isIgnoreHandleError,autoCode,annotationProcessor.getTypeName(innerGp));
+        return addStatement(builder, executableElement, isIgnoreRrefreshToken, isIgnoreHandleError, autoCode, annotationProcessor.getTypeName(innerGp),listOfInnerGp);
     }
 
 
@@ -165,7 +164,7 @@ public class ApiRepoertoryProcessor implements IProcessor {
      * @param executableElement
      * @return
      */
-    private MethodSpec createMethodByResopnseObj(ExecutableElement executableElement,boolean isIgnoreRrefreshToken,boolean isIgnoreHandleError) {
+    private MethodSpec createMethodByResopnseObj(ExecutableElement executableElement, boolean isIgnoreRrefreshToken, boolean isIgnoreHandleError) {
 
         //====== BaseResponse<Object> ============
         String[] baseRespSplit = baseRespPath.split("\\.");
@@ -185,10 +184,10 @@ public class ApiRepoertoryProcessor implements IProcessor {
         String autoCode = "return $T.getINSTANCE().getEasyService().$L($L)" +
                 ".map($T.<$T>handleNoDataResult())." +
                 "retryWhen($T.refreshToken().doRefresh())" +
-                ".onErrorResumeNext($T.httpErrorHandle())" +
+                ".onErrorResumeNext($T.<$T>httpErrorHandle())" +
                 ".compose($T.<$T>io_main())";
 
-        return addStatement(builder,executableElement,isIgnoreRrefreshToken,isIgnoreHandleError,autoCode,baseResponse);
+        return addStatement(builder, executableElement, isIgnoreRrefreshToken, isIgnoreHandleError, autoCode, baseResponse,null);
     }
 
 
@@ -198,7 +197,7 @@ public class ApiRepoertoryProcessor implements IProcessor {
      * @param executableElement
      * @return
      */
-    private MethodSpec createMethodByResponse(ExecutableElement executableElement,boolean isIgnoreRrefreshToken,boolean isIgnoreHandleError) {
+    private MethodSpec createMethodByResponse(ExecutableElement executableElement, boolean isIgnoreRrefreshToken, boolean isIgnoreHandleError) {
         // Flowable<Login> -> Login
         String genericParadigm = Utils.getGenericParadigm(executableElement.getReturnType().toString(), "io.reactivex.Flowable<");
         MethodSpec.Builder builder = MethodSpec.methodBuilder(executableElement.getSimpleName().toString())
@@ -209,22 +208,23 @@ public class ApiRepoertoryProcessor implements IProcessor {
 
         String autoCode = "return $T.getINSTANCE().getEasyService().$L($L)" +
                 ".map($T.<$T>handleResult()).retryWhen($T.refreshToken().doRefresh())" +
-                ".onErrorResumeNext($T.httpErrorHandle())" +
+                ".onErrorResumeNext($T.<$T>httpErrorHandle())" +
                 ".compose($T.<$T>io_main())";
 
-        return addStatement(builder,executableElement,isIgnoreRrefreshToken,isIgnoreHandleError,autoCode,annotationProcessor.getTypeName(genericParadigm));
+        return addStatement(builder, executableElement, isIgnoreRrefreshToken, isIgnoreHandleError, autoCode, annotationProcessor.getTypeName(genericParadigm),null);
 
     }
 
     /**
      * 组装代码
+     *
      * @param builder
      * @param executableElement
      * @param autoCode
      * @param genericParadigm
      * @return
      */
-    private MethodSpec addStatement(MethodSpec.Builder builder,ExecutableElement executableElement,boolean isIgnoreRefreshToken,boolean isIgnoreErrorHandle,String autoCode,TypeName genericParadigm){
+    private MethodSpec addStatement(MethodSpec.Builder builder, ExecutableElement executableElement, boolean isIgnoreRefreshToken, boolean isIgnoreErrorHandle, String autoCode, TypeName genericParadigm,TypeName errorHandleGenericParadigm) {
 
         String parameterStr = getParameterStr(executableElement, builder);
 
@@ -233,7 +233,7 @@ public class ApiRepoertoryProcessor implements IProcessor {
             autoCode = autoCode.replace(".retryWhen($T.refreshToken().doRefresh())", "");
         }
         if (isIgnoreErrorHandle) {
-            autoCode = autoCode.replace(".onErrorResumeNext($T.httpErrorHandle())", "");
+            autoCode = autoCode.replace(".onErrorResumeNext($T.<$T>httpErrorHandle())", "");
         }
         if (isIgnoreRefreshToken && isIgnoreErrorHandle) {
             builder.addStatement(autoCode
@@ -243,9 +243,22 @@ public class ApiRepoertoryProcessor implements IProcessor {
                     , annotationProcessor.getTypeName(easyApiPath)
                     , genericParadigm
                     , annotationProcessor.getTypeName(easyApiPath)
-                    , genericParadigm
+                    , errorHandleGenericParadigm == null?genericParadigm:errorHandleGenericParadigm
             );
-        } else if (isIgnoreRefreshToken || isIgnoreErrorHandle) {
+        } else if (isIgnoreRefreshToken) {
+            builder.addStatement(autoCode
+                    , annotationProcessor.getTypeName(apiPath)
+                    , executableElement.getSimpleName().toString()
+                    , parameterStr
+                    , annotationProcessor.getTypeName(easyApiPath)
+                    , genericParadigm
+                    , annotationProcessor.getTypeName(easyApiPath)
+                    , errorHandleGenericParadigm == null?genericParadigm:errorHandleGenericParadigm
+                    , annotationProcessor.getTypeName(easyApiPath)
+                    , errorHandleGenericParadigm == null?genericParadigm:errorHandleGenericParadigm
+            );
+        } else if (isIgnoreErrorHandle) {
+
             builder.addStatement(autoCode
                     , annotationProcessor.getTypeName(apiPath)
                     , executableElement.getSimpleName().toString()
@@ -254,7 +267,7 @@ public class ApiRepoertoryProcessor implements IProcessor {
                     , genericParadigm
                     , annotationProcessor.getTypeName(easyApiPath)
                     , annotationProcessor.getTypeName(easyApiPath)
-                    , genericParadigm
+                    , errorHandleGenericParadigm == null?genericParadigm:errorHandleGenericParadigm
             );
         } else {
             builder.addStatement(autoCode
@@ -265,8 +278,9 @@ public class ApiRepoertoryProcessor implements IProcessor {
                     , genericParadigm
                     , annotationProcessor.getTypeName(easyApiPath)
                     , annotationProcessor.getTypeName(easyApiPath)
+                    , errorHandleGenericParadigm == null?genericParadigm:errorHandleGenericParadigm
                     , annotationProcessor.getTypeName(easyApiPath)
-                    , genericParadigm
+                    , errorHandleGenericParadigm == null?genericParadigm:errorHandleGenericParadigm
             );
         }
 
@@ -282,9 +296,9 @@ public class ApiRepoertoryProcessor implements IProcessor {
      */
     private String getParameterStr(ExecutableElement executableElement, MethodSpec.Builder builder) {
 
-        if(paramsReplaceKey.length != paramsReplaceValue.length){
+        if (paramsReplaceKey.length != paramsReplaceValue.length) {
             annotationProcessor.mMessager.printMessage(Diagnostic.Kind.ERROR, "请检查paramsReplaceKey 和 paramsReplaceValue 是否相等");
-            return "" ;
+            return "";
         }
 
         String parameterStr = "";
@@ -294,7 +308,7 @@ public class ApiRepoertoryProcessor implements IProcessor {
             }
             VariableElement variableElement = executableElement.getParameters().get(i);
             //查看是否需要替换掉入参
-            int containsIndex = contains(paramsReplaceKey,variableElement.getSimpleName().toString());
+            int containsIndex = contains(paramsReplaceKey, variableElement.getSimpleName().toString());
             if (containsIndex > -1) {
                 parameterStr += paramsReplaceValue[containsIndex];
                 continue;
@@ -308,15 +322,16 @@ public class ApiRepoertoryProcessor implements IProcessor {
 
     /**
      * 判断值是否相等
+     *
      * @param strings
      * @param value
      * @return
      */
-    private int contains(String[] strings,String value){
-        if(strings == null || strings.length == 0)return -1;
-        for(int i= 0;i<strings.length;i++){
+    private int contains(String[] strings, String value) {
+        if (strings == null || strings.length == 0) return -1;
+        for (int i = 0; i < strings.length; i++) {
             String key = strings[i];
-            if(key.equals(value))return i;
+            if (key.equals(value)) return i;
         }
         return -1;
     }

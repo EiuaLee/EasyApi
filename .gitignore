@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+/annotationpublish.gradle
+/compilerpublish.gradle
+/publish.gradle

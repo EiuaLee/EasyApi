@@ -54,8 +54,9 @@ public class Utils {
 
     /**
      * 获取泛型String
-     *
-     * @return
+     * @param indexStr 开始获取的位置
+     * @param string 原始数据
+     * @return 泛型 String
      */
     public static String getGenericParadigm(String string, String indexStr) {
         String replaceStr = string.replace(indexStr, "");

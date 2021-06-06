@@ -61,6 +61,7 @@ object EasyApi {
      * 处理返回的数据 要求转换的是一个List
      * @return Function<EasyRespIface<T>, MutableList<T>>
      */
+    @JvmStatic
     fun <T> handleListResult(): Function<EasyRespIface<T>, MutableList<T>?> {
         if (onEasyApiCallback == null) {
             throw NullPointerException("OnEasyApiCallback 不能为空")
