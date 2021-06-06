@@ -28,12 +28,10 @@
 #### 使用步骤（演示kotlin 版本）
 
 ##### 1、导入依赖包
-
-`
+```
 api 'io.github.eiualee:easyapi:1.1.0'
-
 kapt 'io.github.eiualee:easyapi_compiler:1.1.0'
-`
+```
 
 ##### 2、继承EasyApiServiceIface<T>,并添加单例
 上面的泛型指的是Retrofit框架指定传入的接口，可参考   [ApiService.kt](https://github.com/EiuaLee/EasyApi/blob/master/app/src/main/java/com/eiualee/demo/api/ApiService.kt)  和 [Api.kt](https://github.com/EiuaLee/EasyApi/blob/master/app/src/main/java/com/eiualee/demo/api/Api.kt)
