@@ -31,6 +31,7 @@
 
 `
 api 'io.github.eiualee:easyapi:1.1.0'
+
 kapt 'io.github.eiualee:easyapi_compiler:1.1.0'
 `
 
